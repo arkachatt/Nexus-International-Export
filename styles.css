@@ -20,6 +20,7 @@ body {
   color: var(--text-color);
   background: var(--background-color);
   overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 .wrapper {
