@@ -131,6 +131,12 @@ body {
   border-radius: 2px;
 }
 
+.logo-image {
+  width: 150px;
+  height: auto;
+  /* border-radius: 50%; */
+  object-fit: cover;
+}
 /* Hero Section */
 .hero {
   position: relative;
@@ -438,6 +444,7 @@ body {
   /* Adjust the min-width based on desired card width */
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 40px;
+  overflow-y: hidden;
 }
 
 .product-item {
@@ -672,7 +679,9 @@ body {
   padding: 20px;
   display: flex;
   flex-direction: column;
-  min-height: 350px; /* or whatever makes sense for your layout */
+  min-height: 350px;
+  min-width: 280px; /* or whatever makes sense for your layout */
+  overflow-y: hidden;
 
   /* justify-content: space-between; */
 }
