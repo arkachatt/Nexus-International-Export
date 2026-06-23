@@ -1035,11 +1035,21 @@ body {
 
 .certification-logos {
   display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  opacity: 0.7;
+}
+
+.logos-slide {
+  display: flex;
   gap: 32px;
   align-items: center;
-  justify-content: center;
-  opacity: 0.7;
-  width: 100%;
+}
+
+/* Hide duplicate slide on desktop */
+.logos-slide[aria-hidden="true"] {
+  display: none;
 }
 
 .certification-logos img.legal-logo {
@@ -1047,6 +1057,17 @@ body {
   width: auto;
   display: block;
 }
+
+/* Infinite loop ticker animation keyframes */
+@keyframes ticker {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
 
 /* Responsive Adjustments */
 @media (max-width: 1199px) {
@@ -1064,20 +1085,69 @@ body {
 }
 
 @media (max-width: 767px) {
+  .cta-section {
+    padding: 64px 0;
+  }
+
+  .cta-section .container {
+    width: calc(100% - 32px);
+    margin: 0 auto;
+  }
+
   .cta-heading {
-    font-size: 1.75rem;
+    font-size: 1.75rem; /* 28px */
   }
 
   .cta-content-container {
-    gap: 24px;
+    gap: 40px;
+  }
+
+  .cta-content-top {
+    gap: 16px;
+    width: 100%;
+  }
+
+  .cta-button {
+    width: 100%;
+    height: 48px;
+    font-size: 0.75rem; /* 12px */
+  }
+
+  .cta-content-bottom {
+    gap: 8px;
+  }
+
+  .cta-subtext {
+    font-size: 0.875rem; /* 14px */
   }
 
   .certification-logos {
-    gap: 16px;
+    overflow: hidden;
+    white-space: nowrap;
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    position: relative;
+    padding: 10px 0;
+  }
+
+  .logos-slide {
+    display: flex;
+    gap: 24px;
+    animation: ticker 15s linear infinite;
+    flex-shrink: 0;
+    padding-right: 24px;
+  }
+
+  /* Show duplicate slide on mobile */
+  .logos-slide[aria-hidden="true"] {
+    display: flex;
   }
 
   .certification-logos img.legal-logo {
-    height: 64px;
+    height: 88px;
+    width: auto;
+    display: block;
   }
 }
 
