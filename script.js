@@ -2,20 +2,52 @@
  * 1) HAMBURGER MENU
  **********************************************/
 document.addEventListener("DOMContentLoaded", function () {
-  console.log("DOM loaded – hamburger menu script running...");
+  console.log("DOM loaded – navbar controller running...");
 
   const hamburger = document.getElementById("hamburger");
-  const nav = document.querySelector(".nav");
+  const navbar = document.getElementById("navbar");
+  const logoImage = document.querySelector(".logo-image");
+  const hero = document.querySelector(".hero");
 
-  if (!hamburger || !nav) {
-    console.error("Could not find #hamburger or .nav elements in the DOM.");
+  if (!hamburger || !navbar) {
+    console.error("Could not find #hamburger or #navbar elements in the DOM.");
     return;
   }
 
+  function updateNavbarState() {
+    const heroHeight = hero ? hero.offsetHeight : window.innerHeight;
+    const isScrolled = window.scrollY > heroHeight - 80;
+    const isMenuOpen = navbar.classList.contains("active");
+
+    if (isScrolled || isMenuOpen) {
+      if (!navbar.classList.contains("header-active")) {
+        navbar.classList.add("header-active");
+      }
+      if (logoImage && !logoImage.src.includes("Nexus%20International%20logo-light.svg") && !logoImage.src.includes("Nexus International logo-light.svg")) {
+        logoImage.src = "Nexus International logo-light.svg";
+      }
+    } else {
+      if (navbar.classList.contains("header-active")) {
+        navbar.classList.remove("header-active");
+      }
+      if (logoImage && !logoImage.src.includes("logo_full.png")) {
+        logoImage.src = "logo_full.png";
+      }
+    }
+  }
+
+  // Toggle active class on click
   hamburger.addEventListener("click", () => {
-    console.log("Hamburger clicked. Toggling .active on nav...");
-    nav.classList.toggle("active");
+    console.log("Hamburger clicked. Toggling menu active state...");
+    navbar.classList.toggle("active");
+    updateNavbarState();
   });
+
+  // Listen for scroll events
+  window.addEventListener("scroll", updateNavbarState);
+
+  // Initial state check
+  updateNavbarState();
 });
 
 /**********************************************
@@ -277,43 +309,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /**********************************************
- * 5) NAVBAR SCROLL (Sticky Header)
+ * 5) NAVBAR SCROLL (Sticky Header - Consolidated into Section 1)
  **********************************************/
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("DOM loaded – sticky navbar script running...");
-
-  const navbar = document.getElementById("navbar");
-  const logoImage = document.querySelector(".logo-image");
-  const hero = document.querySelector(".hero");
-
-  if (!navbar) {
-    console.warn("No navbar (#navbar) found in DOM.");
-    return;
-  }
-
-  // Listen for scroll events
-  window.addEventListener("scroll", () => {
-    const heroHeight = hero ? hero.offsetHeight : window.innerHeight;
-    // Trigger when scrolled away from the hero section (hero height minus navbar height approx)
-    if (window.scrollY > heroHeight - 80) {
-      if (!navbar.classList.contains("header-active")) {
-        console.log("Adding .header-active class to navbar and swapping to light logo...");
-        navbar.classList.add("header-active");
-        if (logoImage) {
-          logoImage.src = "Nexus International logo-light.svg";
-        }
-      }
-    } else {
-      if (navbar.classList.contains("header-active")) {
-        console.log("Removing .header-active class from navbar and swapping to dark logo...");
-        navbar.classList.remove("header-active");
-        if (logoImage) {
-          logoImage.src = "logo_full.png";
-        }
-      }
-    }
-  });
-});
 
 /**********************************************
  * 6) DYNAMIC COPYRIGHT YEAR
