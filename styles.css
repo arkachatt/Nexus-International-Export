@@ -238,11 +238,15 @@ body {
 }
 
 .hero-title {
-  font-size: 4.25rem; /* 68px in rem */
+  font-size: clamp(2.25rem, 1.5rem + 3.056vw, 4.25rem); /* Fluid: 36px to 68px */
   line-height: 1.2;
   max-width: 1100px;
   font-weight: 400;
   color: var(--text-color);
+}
+
+.hero-title br {
+  display: block;
 }
 
 .hero-title .highlight {
@@ -255,7 +259,7 @@ body {
 .hero-subtitle {
   font-family: var(--font-family);
   font-weight: 500;
-  font-size: 1.25rem; /* 20px in rem */
+  font-size: clamp(1.125rem, 1.078rem + 0.191vw, 1.25rem); /* Fluid: 18px to 20px */
   line-height: 1.5;
   letter-spacing: -0.01em;
   color: #a2a8a7;
@@ -309,11 +313,11 @@ body {
 /* Responsive Styles */
 @media (max-width: 1199px) {
   .header {
-    padding: 18px 40px;
+    padding: 14px 24px;
   }
 
   .header-active {
-    padding: 18px 40px;
+    padding: 14px 24px;
   }
 
   .nav-links {
@@ -323,7 +327,7 @@ body {
     background: rgba(0, 0, 0, 0.85);
     position: absolute;
     top: 70px;
-    right: 40px;
+    right: 24px;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -344,60 +348,66 @@ body {
   }
 
   .hero-content {
-    padding: 0 40px;
+    padding: 0 24px;
   }
 
-  .hero-title {
-    font-size: 2rem;
+  .hero-title br {
+    display: none;
   }
 
-  .hero-subtitle {
-    font-size: 0.95rem;
-    max-width: 90%;
+  .hero-ctas .btn {
+    height: 52px;
+    font-size: 0.95rem; /* ~15px */
+    padding: 8px 24px;
   }
 }
 
 @media (max-width: 767px) {
+  .hero {
+    height: 598px; /* Locked height as per mobile design */
+  }
+
   .header {
-    padding: 12px 40px;
+    padding: 12px 16px;
   }
 
   .header-active {
-    padding: 12px 40px;
+    padding: 12px 16px;
   }
 
   .nav-links {
-    right: 40px;
+    right: 16px;
     top: 60px;
   }
 
   .hero-content {
-    padding: 0 40px;
-    gap: 32px;
+    padding: 112px 16px 80px 16px; /* Position elements starting at 112px */
+    justify-content: flex-start;
+    gap: 56px; /* Spacing between text container and buttons */
   }
 
   .hero-text-container {
-    gap: 16px;
+    gap: 16px; /* Spacing between title and subtitle */
   }
 
   .hero-title {
-    font-size: 1.5rem;
-  }
-
-  .hero-subtitle {
-    font-size: 0.9rem;
+    line-height: 1.3;
   }
 
   .hero-ctas {
     flex-direction: column;
     align-items: center;
     width: 100%;
+    gap: 16px; /* Vertical gap between buttons */
   }
 
   .hero-ctas .btn {
-    width: 100%; /* Full width buttons on mobile */
-    max-width: 300px;
-    font-size: 0.875rem; /* 14px in rem */
+    width: 100%;
+    max-width: none; /* Let buttons span the full container width */
+    height: 48px; /* Locked height */
+    font-size: 0.75rem; /* 12px in rem */
+    letter-spacing: -0.3px; /* -0.025em */
+    padding: 8px 30px;
   }
 }
 
