@@ -168,16 +168,21 @@ body {
 .hamburger {
   display: none;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
-  margin-left: 20px;
+  gap: 6px;
+  margin-left: 0;
 }
 
 .hamburger span {
   height: 2px;
-  width: 25px;
+  width: 24px;
   background: #fff;
-  margin-bottom: 5px;
   border-radius: 2px;
+  transition: transform var(--transition-speed) ease, background-color var(--transition-speed) ease;
 }
 
 .logo-image {
@@ -320,6 +325,28 @@ body {
     padding: 14px 24px;
   }
 
+  .header .btn-primary {
+    display: none; /* Hide Contact Us CTA on tablet and mobile viewports */
+  }
+
+  .logo {
+    order: 1; /* Align logo to the left */
+  }
+
+  .hamburger {
+    display: flex;
+    order: 2; /* Align hamburger to the right */
+  }
+
+  /* Hamburger Active Animation (morphs 2 lines to 'X') */
+  .nav.active .hamburger span:nth-child(1) {
+    transform: translateY(4px) rotate(45deg);
+  }
+
+  .nav.active .hamburger span:nth-child(2) {
+    transform: translateY(-4px) rotate(-45deg);
+  }
+
   .nav-links {
     display: none;
     flex-direction: column;
@@ -340,10 +367,6 @@ body {
   }
 
   .nav.active .nav-links {
-    display: flex;
-  }
-
-  .hamburger {
     display: flex;
   }
 
@@ -373,6 +396,15 @@ body {
 
   .header-active {
     padding: 12px 16px;
+  }
+
+  .logo a {
+    height: 32px;
+  }
+
+  .logo-image {
+    width: 89.83px; /* Locked size as per mobile design node 809-291 */
+    height: 32px;
   }
 
   .nav-links {
