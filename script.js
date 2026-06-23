@@ -321,7 +321,7 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
   const currentYear = new Date().getFullYear();
   const copyrightYearEl = document.getElementById("copyrightYear");
-  if (copyrightYearEl && currentYear > 2024) {
-    copyrightYearEl.textContent = `2024 — ${currentYear}`;
+  if (copyrightYearEl) {
+    copyrightYearEl.textContent = currentYear;
   }
 });
