@@ -430,7 +430,7 @@ body {
     height: 40px;
     background-color: var(--primary-color);
     color: #1a3631;
-    font-size: 0.75rem; /* 12px */
+    font-size: 1rem; /* 16px in rem */
     letter-spacing: -0.025em; /* -0.3px */
     border-radius: 8px;
     display: flex;
@@ -473,7 +473,7 @@ body {
 
   .hero-ctas .btn {
     height: 52px;
-    font-size: 0.95rem; /* ~15px */
+    font-size: 1rem; /* 16px in rem */
     padding: 8px 24px;
   }
 }
@@ -512,8 +512,6 @@ body {
     width: 100%;
     max-width: none; /* Let buttons span the full container width */
     height: 48px; /* Locked height */
-    font-size: 0.75rem; /* 12px in rem */
-    letter-spacing: -0.3px; /* -0.025em */
     padding: 8px 30px;
   }
 }
