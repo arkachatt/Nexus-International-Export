@@ -28,8 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const leftArrow = document.querySelector(".left-arrow");
   const rightArrow = document.querySelector(".right-arrow");
 
-  const scrollAmount = 300; // Adjust if needed
-
   if (!reviewsScroll || !leftArrow || !rightArrow) {
     console.error(
       "Could not find .reviews-scroll, .left-arrow, or .right-arrow elements."
@@ -37,15 +35,129 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  let currentTranslate = 0;
+
+  function getScrollAmount() {
+    const cards = reviewsScroll.querySelectorAll(".review-card");
+    if (cards.length > 0) {
+      const card = cards[0];
+      const style = window.getComputedStyle(reviewsScroll);
+      const gap = parseInt(style.gap) || 24;
+      return card.offsetWidth + gap;
+    }
+    return 423;
+  }
+
+  function getMaxTranslate() {
+    const cards = reviewsScroll.querySelectorAll(".review-card");
+    if (cards.length === 0) return 0;
+    const cardWidth = cards[0].offsetWidth;
+    const style = window.getComputedStyle(reviewsScroll);
+    const gap = parseInt(style.gap) || 24;
+    const totalWidth = (cards.length * cardWidth) + ((cards.length - 1) * gap);
+    
+    // Width of the container (1440px max grid content width)
+    const container = document.querySelector(".reviews-section .container");
+    const containerWidth = container ? container.clientWidth : 1280;
+    
+    return Math.max(0, totalWidth - containerWidth);
+  }
+
+  function updateArrowStates() {
+    const isDesktop = window.innerWidth >= 1200;
+    
+    if (isDesktop) {
+      const maxTranslate = getMaxTranslate();
+      
+      // Left arrow disabled at start
+      if (currentTranslate <= 5) {
+        leftArrow.classList.add("disabled");
+        leftArrow.setAttribute("disabled", "true");
+        leftArrow.setAttribute("aria-disabled", "true");
+      } else {
+        leftArrow.classList.remove("disabled");
+        leftArrow.removeAttribute("disabled");
+        leftArrow.removeAttribute("aria-disabled");
+      }
+
+      // Right arrow disabled at end
+      if (currentTranslate >= maxTranslate - 5) {
+        rightArrow.classList.add("disabled");
+        rightArrow.setAttribute("disabled", "true");
+        rightArrow.setAttribute("aria-disabled", "true");
+      } else {
+        rightArrow.classList.remove("disabled");
+        rightArrow.removeAttribute("disabled");
+        rightArrow.removeAttribute("aria-disabled");
+      }
+    } else {
+      const scrollLeft = reviewsScroll.scrollLeft;
+      const maxScroll = reviewsScroll.scrollWidth - reviewsScroll.clientWidth;
+
+      if (scrollLeft <= 5) {
+        leftArrow.classList.add("disabled");
+        leftArrow.setAttribute("disabled", "true");
+        leftArrow.setAttribute("aria-disabled", "true");
+      } else {
+        leftArrow.classList.remove("disabled");
+        leftArrow.removeAttribute("disabled");
+        leftArrow.removeAttribute("aria-disabled");
+      }
+
+      if (scrollLeft >= maxScroll - 5) {
+        rightArrow.classList.add("disabled");
+        rightArrow.setAttribute("disabled", "true");
+        rightArrow.setAttribute("aria-disabled", "true");
+      } else {
+        rightArrow.classList.remove("disabled");
+        rightArrow.removeAttribute("disabled");
+        rightArrow.removeAttribute("aria-disabled");
+      }
+    }
+  }
+
   rightArrow.addEventListener("click", () => {
-    console.log("Right arrow clicked. Scrolling right by", scrollAmount);
-    reviewsScroll.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    const isDesktop = window.innerWidth >= 1200;
+    const scrollAmount = getScrollAmount();
+    
+    if (isDesktop) {
+      const maxTranslate = getMaxTranslate();
+      currentTranslate = Math.min(currentTranslate + scrollAmount, maxTranslate);
+      reviewsScroll.style.transform = `translateX(-${currentTranslate}px)`;
+      updateArrowStates();
+    } else {
+      reviewsScroll.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
   });
 
   leftArrow.addEventListener("click", () => {
-    console.log("Left arrow clicked. Scrolling left by", scrollAmount);
-    reviewsScroll.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+    const isDesktop = window.innerWidth >= 1200;
+    const scrollAmount = getScrollAmount();
+    
+    if (isDesktop) {
+      currentTranslate = Math.max(currentTranslate - scrollAmount, 0);
+      reviewsScroll.style.transform = `translateX(-${currentTranslate}px)`;
+      updateArrowStates();
+    } else {
+      reviewsScroll.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+    }
   });
+
+  // Scroll listener for mobile/tablet swipes
+  reviewsScroll.addEventListener("scroll", updateArrowStates);
+
+  // Resize listener to sync translate / scroll states
+  window.addEventListener("resize", () => {
+    const isDesktop = window.innerWidth >= 1200;
+    if (!isDesktop) {
+      reviewsScroll.style.transform = "none";
+      currentTranslate = 0;
+    }
+    updateArrowStates();
+  });
+
+  // Initial state check
+  updateArrowStates();
 });
 
 /**********************************************
@@ -171,6 +283,9 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("DOM loaded – sticky navbar script running...");
 
   const navbar = document.getElementById("navbar");
+  const logoImage = document.querySelector(".logo-image");
+  const hero = document.querySelector(".hero");
+
   if (!navbar) {
     console.warn("No navbar (#navbar) found in DOM.");
     return;
@@ -178,16 +293,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Listen for scroll events
   window.addEventListener("scroll", () => {
-    if (window.scrollY > 50) {
+    const heroHeight = hero ? hero.offsetHeight : window.innerHeight;
+    // Trigger when scrolled away from the hero section (hero height minus navbar height approx)
+    if (window.scrollY > heroHeight - 80) {
       if (!navbar.classList.contains("header-active")) {
-        console.log("Adding .header-active class to navbar...");
+        console.log("Adding .header-active class to navbar and swapping to light logo...");
         navbar.classList.add("header-active");
+        if (logoImage) {
+          logoImage.src = "Nexus International logo-light.svg";
+        }
       }
     } else {
       if (navbar.classList.contains("header-active")) {
-        console.log("Removing .header-active class from navbar...");
+        console.log("Removing .header-active class from navbar and swapping to dark logo...");
         navbar.classList.remove("header-active");
+        if (logoImage) {
+          logoImage.src = "logo_full.png";
+        }
       }
     }
   });
+});
+
+/**********************************************
+ * 6) DYNAMIC COPYRIGHT YEAR
+ **********************************************/
+document.addEventListener("DOMContentLoaded", () => {
+  const currentYear = new Date().getFullYear();
+  const copyrightYearEl = document.getElementById("copyrightYear");
+  if (copyrightYearEl && currentYear > 2024) {
+    copyrightYearEl.textContent = `2024 — ${currentYear}`;
+  }
 });

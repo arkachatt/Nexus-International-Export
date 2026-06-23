@@ -1,0 +1,8 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 40 24.7314" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Container">
+<g id="Container_2">
+<path id="Subtract" fill-rule="evenodd" clip-rule="evenodd" d="M39.6324 0H27.8702L20.5605 6.72125H26.0499V11.9964L39.6324 0ZM19.743 6.72125L12.4324 0H0.670161L8.27869 6.72125H19.743ZM8.04024 17.8204L0.302593 24.6048H8.04024V17.8204ZM26.0499 22.6271V12.4091L40 24.6048H28.2378L26.0499 22.6271Z" fill="var(--fill-0, white)"/>
+</g>
+<path id="Arrow" d="M12.1134 24.7314H0.378545H0L14.3847 12.2395L11.6087 9.71583H23.0913V20.0627L20.0629 17.4129L12.1134 24.7314Z" fill="var(--fill-0, #91CC08)"/>
+</g>
+</svg>
