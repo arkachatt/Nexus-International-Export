@@ -577,8 +577,17 @@ body {
 
 /* Responsive adjustments */
 @media (max-width: 767px) {
+  .intro-section {
+    padding: 32px 0;
+  }
+
+  .intro-section .container {
+    width: calc(100% - 32px);
+    margin: 0 auto;
+  }
+
   .intro-text-container {
-    gap: 16px;
+    gap: 12px;
     margin-bottom: 32px;
   }
 
@@ -587,18 +596,18 @@ body {
   }
 
   .intro-subtext {
-    font-size: 0.95rem;
-    padding: 0 40px;
-  }
-}
-
-@media (max-width: 480px) {
-  .intro-heading {
-    font-size: 1.5rem;
+    font-size: 0.875rem;
+    padding: 0;
   }
 
-  .intro-subtext {
-    font-size: 0.9rem;
+  .intro-image-wrapper {
+    height: 440px;
+  }
+
+  .intro-image {
+    height: 100%;
+    object-fit: cover;
+    aspect-ratio: auto;
   }
 }
 
