@@ -681,38 +681,9 @@ body {
 
 .advantage-icon {
   display: block;
+  width: 2rem; /* 32px base size as per design */
+  height: 2rem; /* 32px base size as per design */
   object-fit: contain;
-}
-
-/* Individual Icon Dimension Rules to prevent stretching & ensure visual uniformity */
-.advantage-item:nth-child(1) .advantage-icon {
-  width: 1.633rem; /* 26.12px */
-  height: 1.525rem; /* 24.40px */
-}
-
-.advantage-item:nth-child(2) .advantage-icon {
-  width: 1.525rem; /* 24.40px */
-  height: 1.524rem; /* 24.38px */
-}
-
-.advantage-item:nth-child(3) .advantage-icon {
-  width: 1.670rem; /* 26.73px */
-  height: 1.776rem; /* 28.42px */
-}
-
-.advantage-item:nth-child(4) .advantage-icon {
-  width: 1.525rem; /* 24.40px */
-  height: 1.525rem; /* 24.40px */
-}
-
-.advantage-item:nth-child(5) .advantage-icon {
-  width: 2rem; /* 32px */
-  height: 2rem; /* 32px */
-}
-
-.advantage-item:nth-child(6) .advantage-icon {
-  width: 1.681rem; /* 26.89px */
-  height: 1.014rem; /* 16.23px */
 }
 
 .advantage-title {
