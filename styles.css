@@ -493,8 +493,8 @@ body {
   }
 
   .hero-content {
-    padding: 112px 16px 80px 16px; /* Position elements starting at 112px */
-    justify-content: flex-start;
+    padding: 80px 16px;
+    justify-content: center;
     gap: 56px; /* Spacing between text container and buttons */
   }
 
