@@ -493,7 +493,7 @@ body {
   }
 
   .hero-content {
-    padding: 80px 16px;
+    padding: 64px 16px 0 16px; /* Offset the 64px fixed header, 0 bottom padding for perfect centering in the remaining space */
     justify-content: center;
     gap: 56px; /* Spacing between text container and buttons */
   }
