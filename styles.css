@@ -907,6 +907,7 @@ body {
     flex-direction: row;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
+    scroll-padding: 0 16px;
     -webkit-overflow-scrolling: touch;
     gap: 20px;
     padding: 0 16px;
