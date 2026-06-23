@@ -23,15 +23,15 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!navbar.classList.contains("header-active")) {
         navbar.classList.add("header-active");
       }
-      if (logoImage && !logoImage.src.includes("Nexus%20International%20logo-light.svg") && !logoImage.src.includes("Nexus International logo-light.svg")) {
-        logoImage.src = "Nexus International logo-light.svg";
+      if (logoImage && !logoImage.src.includes("Logo_dark_j9mzl6.svg")) {
+        logoImage.src = "https://res.cloudinary.com/dpaulzah2/image/upload/v1782250703/Logo_dark_j9mzl6.svg";
       }
     } else {
       if (navbar.classList.contains("header-active")) {
         navbar.classList.remove("header-active");
       }
-      if (logoImage && !logoImage.src.includes("logo_full.png")) {
-        logoImage.src = "logo_full.png";
+      if (logoImage && !logoImage.src.includes("Logo_light_deltoa.svg")) {
+        logoImage.src = "https://res.cloudinary.com/dpaulzah2/image/upload/v1782250641/Logo_light_deltoa.svg";
       }
     }
   }
