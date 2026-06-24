@@ -871,7 +871,7 @@ body {
   }
   .products-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 40px;
+    gap: 28px;
   }
   .product-item {
     text-align: left;
