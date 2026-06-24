@@ -2216,7 +2216,7 @@ body.loading {
   width: 100vw;
   height: 100dvh;
   z-index: 9999;
-  background-color: #030505;
+  background-color: transparent;
   overflow: hidden;
   pointer-events: all;
   transition: opacity 0.5s ease 1s, visibility 0.5s ease 1s;
