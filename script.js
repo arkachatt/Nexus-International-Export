@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateArrowStates() {
-    const isDesktop = window.innerWidth >= 1200;
+    const isDesktop = window.innerWidth >= 992;
     
     if (isDesktop) {
       const maxTranslate = getMaxTranslate();
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   rightArrow.addEventListener("click", () => {
-    const isDesktop = window.innerWidth >= 1200;
+    const isDesktop = window.innerWidth >= 992;
     const scrollAmount = getScrollAmount();
     
     if (isDesktop) {
@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   leftArrow.addEventListener("click", () => {
-    const isDesktop = window.innerWidth >= 1200;
+    const isDesktop = window.innerWidth >= 992;
     const scrollAmount = getScrollAmount();
     
     if (isDesktop) {
@@ -180,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Resize listener to sync translate / scroll states
   window.addEventListener("resize", () => {
-    const isDesktop = window.innerWidth >= 1200;
+    const isDesktop = window.innerWidth >= 992;
     if (!isDesktop) {
       reviewsScroll.style.transform = "none";
       currentTranslate = 0;
