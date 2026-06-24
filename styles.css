@@ -1742,6 +1742,9 @@ body {
   .contact-image-area {
     width: 450px;
   }
+  .tag {
+    font-size: 0.875rem; /* 14px */
+  }
 }
 
 @media (max-width: 991px) {
