@@ -381,6 +381,14 @@ document.addEventListener("DOMContentLoaded", () => {
   let videoBlobUrl = null;
   let loaderDismissed = false;
 
+  const loaderLogo = document.getElementById("loaderLogo");
+
+  function updateLoaderProgress() {
+    if (!loaderLogo) return;
+    const progress = Math.max(videoProgress, imageProgress);
+    loaderLogo.style.setProperty('--progress', `${progress}%`);
+  }
+
   function showImage(blob) {
     if (imageShown || videoShown) return;
     imageShown = true;
@@ -410,6 +418,10 @@ document.addEventListener("DOMContentLoaded", () => {
   function dismissLoader() {
     if (loaderDismissed) return;
     loaderDismissed = true;
+
+    if (loaderLogo) {
+      loaderLogo.style.setProperty('--progress', '100%');
+    }
 
     console.log("Hero loader: Initiating loader dismiss transition...");
 
@@ -490,6 +502,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function checkProgress() {
+    updateLoaderProgress();
     // If video is fully ready (100% loaded in XHR)
     if (videoProgress === 100) {
       if (videoXHR && videoXHR.response) {
@@ -530,6 +543,7 @@ document.addEventListener("DOMContentLoaded", () => {
     imageXHR.onload = () => {
       if (imageXHR.status === 200 && !imageAborted) {
         imageProgress = 100;
+        updateLoaderProgress();
         if (videoProgress < 80 && !videoShown) {
           showImage(imageXHR.response);
         }
@@ -557,6 +571,7 @@ document.addEventListener("DOMContentLoaded", () => {
   videoXHR.onload = () => {
     if (videoXHR.status === 200) {
       videoProgress = 100;
+      updateLoaderProgress();
       playVideo(videoXHR.response);
     }
   };

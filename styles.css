@@ -2280,4 +2280,18 @@ body.loading {
   height: 100%;
   object-fit: contain;
   display: block;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) calc(var(--progress, 0%) - 10px),
+    rgba(0, 0, 0, 0.15) calc(var(--progress, 0%) + 10px),
+    rgba(0, 0, 0, 0.15) 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) calc(var(--progress, 0%) - 10px),
+    rgba(0, 0, 0, 0.15) calc(var(--progress, 0%) + 10px),
+    rgba(0, 0, 0, 0.15) 100%
+  );
 }
