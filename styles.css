@@ -592,6 +592,12 @@ body {
 }
 
 /* Responsive adjustments */
+@media (max-width: 1199px) {
+  .intro-heading {
+    font-size: 2.25rem; /* 36px */
+  }
+}
+
 @media (max-width: 767px) {
   .intro-section {
     padding: 32px 0;
@@ -726,6 +732,12 @@ body {
   .advantages-heading {
     font-size: 2.25rem; /* 36px */
     margin-bottom: 2.5rem; /* 40px */
+  }
+  .advantage-title {
+    font-size: 1.75rem; /* 28px */
+  }
+  .advantage-description {
+    font-size: 0.875rem; /* 14px */
   }
 }
 
@@ -1748,6 +1760,9 @@ body {
   }
   .tag {
     font-size: 0.875rem; /* 14px */
+  }
+  .contact-heading {
+    font-size: 2.25rem; /* 36px */
   }
 }
 
