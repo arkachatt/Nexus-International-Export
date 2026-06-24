@@ -1382,7 +1382,7 @@ body {
     font-size: 2.25rem;
   }
   .reviews-wrapper {
-    overflow: hidden;
+    overflow: visible;
     padding-bottom: 0;
     margin-bottom: -50px;
   }
@@ -1770,6 +1770,16 @@ body {
 @media (max-width: 1199px) {
   .footer-section {
     padding: 56px 32px;
+  }
+  .footer-nav-container {
+    width: 100%;
+    gap: 32px;
+  }
+  .footer-column.footer-sitemap {
+    width: fit-content;
+  }
+  .footer-column.footer-contact {
+    width: fit-content;
   }
 }
 
