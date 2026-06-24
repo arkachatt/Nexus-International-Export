@@ -361,7 +361,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /**********************************************
- * 7) HERO PROGRESSIVE VIDEO/IMAGE LOADER
+ * 7) HERO PROGRESSIVE VIDEO/IMAGE LOADER & ENTRANCE LOADER
  **********************************************/
 document.addEventListener("DOMContentLoaded", () => {
   const heroVideo = document.querySelector(".hero-video");
@@ -379,6 +379,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let imageAborted = false;
   let imageBlobUrl = null;
   let videoBlobUrl = null;
+  let loaderDismissed = false;
 
   function showImage(blob) {
     if (imageShown || videoShown) return;
@@ -386,6 +387,7 @@ document.addEventListener("DOMContentLoaded", () => {
     imageBlobUrl = URL.createObjectURL(blob);
     heroVideo.style.backgroundImage = `url(${imageBlobUrl})`;
     console.log("Hero loader: Showed fallback image.");
+    dismissLoader();
   }
 
   function playVideo(blob) {
@@ -402,7 +404,82 @@ document.addEventListener("DOMContentLoaded", () => {
       console.warn("Autoplay failed or interrupted:", err);
     });
     console.log("Hero loader: Playing video.");
+    dismissLoader();
   }
+
+  function dismissLoader() {
+    if (loaderDismissed) return;
+    loaderDismissed = true;
+
+    console.log("Hero loader: Initiating loader dismiss transition...");
+
+    const loaderOverlay = document.getElementById("loaderOverlay");
+    const loaderLogoContainer = document.getElementById("loaderLogoContainer");
+    const navLogo = document.querySelector(".logo-image");
+
+    if (!loaderOverlay || !loaderLogoContainer || !navLogo) {
+      document.documentElement.classList.remove("loading");
+      document.body.classList.remove("loading");
+      if (navLogo) navLogo.classList.remove("hidden");
+      if (loaderOverlay) loaderOverlay.remove();
+      return;
+    }
+
+    // 1. Calculate positions using the FLIP technique
+    const navLogoRect = navLogo.getBoundingClientRect();
+    
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    
+    // Centers of elements
+    const navCx = navLogoRect.left + navLogoRect.width / 2;
+    const navCy = navLogoRect.top + navLogoRect.height / 2;
+    
+    const loaderCx = viewportWidth / 2;
+    const loaderCy = viewportHeight / 2;
+    
+    const dx = navCx - loaderCx;
+    const dy = navCy - loaderCy;
+    
+    // Loader logo size is 218.97px by 78px
+    const sx = navLogoRect.width / 218.97;
+    const sy = navLogoRect.height / 78;
+
+    // 2. Trigger high performance GPU-accelerated morph transition (translate + scale)
+    loaderLogoContainer.style.transform = `translate(-50%, -50%) translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
+
+    // 3. Trigger columns staggered slide-up
+    loaderOverlay.classList.add("exit");
+
+    // 4. After column exit and logo morph transition finishes (1.2s matches CSS transition duration)
+    setTimeout(() => {
+      // Reveal the navbar logo
+      navLogo.classList.remove("hidden");
+      navLogo.style.opacity = "1";
+
+      // Fade out the loader logo container
+      loaderLogoContainer.style.opacity = "0";
+
+      // Fade out the main loader overlay wrapper
+      loaderOverlay.classList.add("fade-out");
+
+      // Complete cleanup after fade-out transition
+      setTimeout(() => {
+        document.documentElement.classList.remove("loading");
+        document.body.classList.remove("loading");
+        loaderOverlay.remove();
+        loaderLogoContainer.remove();
+      }, 500); // 0.5s fade-out duration
+    }, 1200); // 1.2s column staggered exit transition duration
+  }
+
+  // Safety fallback: Dismiss loader after 8 seconds to prevent user getting stuck
+  setTimeout(() => {
+    if (!loaderDismissed) {
+      console.warn("Hero loader: Safety timeout triggered. Dismissing loader.");
+      dismissLoader();
+    }
+  }, 8000);
 
   function abortImageDownload(reason) {
     if (imageXHR && imageXHR.readyState !== 4 && imageXHR.readyState !== 0 && !imageAborted) {
@@ -502,4 +579,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("Hero loader: Video failed, but image download is already in progress. Letting it complete.");
     }
   }
+
+  // Expose dismissLoader globally for testing/debugging purposes
+  window.__dismissLoader = dismissLoader;
 });

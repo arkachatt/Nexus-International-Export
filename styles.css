@@ -2194,3 +2194,86 @@ body {
     font-weight: 500;
   }
 }
+
+/* ==============================================
+ * ENTRANCE LOADER OVERLAY
+ * ============================================== */
+html.loading,
+body.loading {
+  overflow: hidden !important;
+  height: 100dvh !important;
+}
+
+.logo-image.hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  z-index: 9999;
+  background-color: #030505;
+  overflow: hidden;
+  pointer-events: all;
+  transition: opacity 0.5s ease 1s, visibility 0.5s ease 1s;
+}
+
+.loader-overlay.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loader-columns {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.loader-col {
+  flex: 1;
+  height: 100%;
+  background-color: #0B1715;
+  transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+  transform: translateY(0);
+}
+
+/* Staggered transition delays for 6 columns */
+.loader-col:nth-child(1) { transition-delay: 0.0s; }
+.loader-col:nth-child(2) { transition-delay: 0.1s; }
+.loader-col:nth-child(3) { transition-delay: 0.2s; }
+.loader-col:nth-child(4) { transition-delay: 0.3s; }
+.loader-col:nth-child(5) { transition-delay: 0.4s; }
+.loader-col:nth-child(6) { transition-delay: 0.5s; }
+
+/* Slide up columns on exit */
+.loader-overlay.exit .loader-col {
+  transform: translateY(-100%);
+}
+
+.loader-logo-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+  pointer-events: none;
+  width: 218.97px;
+  height: 78px;
+  opacity: 1;
+  transform-origin: center center;
+  /* Support smooth animation using high performance transforms */
+  transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1),
+              opacity 0.3s ease 1s;
+}
+
+.loader-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
