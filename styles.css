@@ -1157,7 +1157,8 @@ body {
   z-index: 2;
 }
 
-.reviews-section .container {
+.reviews-section .container,
+#testimonials .container {
   width: calc(100% - 80px);
   max-width: 1440px;
   margin: 0 auto;
@@ -1372,7 +1373,8 @@ body {
 
 /* Responsive Styles */
 @media (max-width: 1199px) {
-  .reviews-section .container {
+  .reviews-section .container,
+  #testimonials .container {
     width: calc(100% - 64px);
     overflow: visible;
   }
@@ -1413,10 +1415,12 @@ body {
     padding: 48px 0 32px 0;
   }
 
-  .reviews-section .container {
+  .reviews-section .container,
+  #testimonials .container {
     width: 100%;
     max-width: none;
     margin: 0;
+    overflow: visible;
   }
   
   .reviews-header {
@@ -1793,7 +1797,7 @@ body {
 
 .footer-nav-container {
   display: flex;
-  gap: 40px;
+  gap: 32px;
   width: 950px;
 }
 
