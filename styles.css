@@ -1737,10 +1737,14 @@ body {
     margin: 0;
   }
   .contact-content {
-    gap: 60px;
+    gap: 48px;
+  }
+  .contact-form-area {
+    flex: 0 0 434px;
   }
   .contact-image-area {
-    width: 450px;
+    width: auto;
+    flex: 1;
   }
   .tag {
     font-size: 0.875rem; /* 14px */
@@ -1752,6 +1756,9 @@ body {
     flex-direction: column;
     gap: 48px;
     align-items: stretch;
+  }
+  .contact-form-area {
+    flex: 1;
   }
   .contact-image-area {
     width: 100%;
