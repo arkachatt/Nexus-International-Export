@@ -43,6 +43,18 @@ document.addEventListener("DOMContentLoaded", function () {
     updateNavbarState();
   });
 
+  // Close menu when clicking on a navigation link
+  const menuLinks = navbar.querySelectorAll(".nav-links a, .btn-primary");
+  menuLinks.forEach(link => {
+    link.addEventListener("click", () => {
+      if (navbar.classList.contains("active")) {
+        console.log("Nav link clicked. Closing menu...");
+        navbar.classList.remove("active");
+        updateNavbarState();
+      }
+    });
+  });
+
   // Listen for scroll events
   window.addEventListener("scroll", updateNavbarState);
 
