@@ -221,7 +221,10 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  background: #000 url('https://res.cloudinary.com/dpaulzah2/image/upload/v1782251285/First_frame_dmuxp7.png') no-repeat center/cover; /* Prevent default browser grey loading state */
+  background-color: #000; /* Just black background initially */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
 
 .hero-overlay {

@@ -359,3 +359,147 @@ document.addEventListener("DOMContentLoaded", () => {
     copyrightYearEl.textContent = currentYear;
   }
 });
+
+/**********************************************
+ * 7) HERO PROGRESSIVE VIDEO/IMAGE LOADER
+ **********************************************/
+document.addEventListener("DOMContentLoaded", () => {
+  const heroVideo = document.querySelector(".hero-video");
+  if (!heroVideo) return;
+
+  const imageUrl = "https://res.cloudinary.com/dpaulzah2/image/upload/v1782251285/First_frame_dmuxp7.png";
+  const videoUrl = "https://res.cloudinary.com/dpaulzah2/video/upload/v1782248512/video_nexus_umuhby.mp4";
+
+  let imageXHR = null;
+  let videoXHR = null;
+  let imageProgress = 0;
+  let videoProgress = 0;
+  let imageShown = false;
+  let videoShown = false;
+  let imageAborted = false;
+  let imageBlobUrl = null;
+  let videoBlobUrl = null;
+
+  function showImage(blob) {
+    if (imageShown || videoShown) return;
+    imageShown = true;
+    imageBlobUrl = URL.createObjectURL(blob);
+    heroVideo.style.backgroundImage = `url(${imageBlobUrl})`;
+    console.log("Hero loader: Showed fallback image.");
+  }
+
+  function playVideo(blob) {
+    if (videoShown) return;
+    videoShown = true;
+
+    // Abort image download if it is still running to save bandwidth
+    abortImageDownload("video is ready");
+
+    videoBlobUrl = URL.createObjectURL(blob);
+    heroVideo.src = videoBlobUrl;
+    heroVideo.load();
+    heroVideo.play().catch((err) => {
+      console.warn("Autoplay failed or interrupted:", err);
+    });
+    console.log("Hero loader: Playing video.");
+  }
+
+  function abortImageDownload(reason) {
+    if (imageXHR && imageXHR.readyState !== 4 && imageXHR.readyState !== 0 && !imageAborted) {
+      imageAborted = true;
+      imageXHR.abort();
+      console.log(`Hero loader: Aborting image download (Reason: ${reason}).`);
+    }
+  }
+
+  function checkProgress() {
+    // If video is fully ready (100% loaded in XHR)
+    if (videoProgress === 100) {
+      if (videoXHR && videoXHR.response) {
+        playVideo(videoXHR.response);
+      }
+      return;
+    }
+
+    // Rule 1: If image load reaches 50% and video is ready: immediately play video
+    // (This is covered when videoProgress === 100, which calls playVideo immediately).
+
+    // Rule 2: If image load reaches 50% and video is below 80% loaded: show image when it finishes
+    if (imageProgress >= 50 && videoProgress < 80) {
+      if (imageXHR && imageXHR.status === 200 && imageXHR.response && !imageAborted) {
+        showImage(imageXHR.response);
+      }
+    }
+
+    // Rule 3: If image load >= 50% and video is >= 80% loaded: abort image download to save bandwidth
+    if (imageProgress >= 50 && videoProgress >= 80) {
+      abortImageDownload(`image at ${imageProgress.toFixed(1)}% and video at ${videoProgress.toFixed(1)}% (>= 80%)`);
+    }
+  }
+
+  // Start image download
+  function startImageDownload() {
+    imageAborted = false;
+    imageProgress = 0;
+    imageXHR = new XMLHttpRequest();
+    imageXHR.open("GET", imageUrl, true);
+    imageXHR.responseType = "blob";
+    imageXHR.onprogress = (e) => {
+      if (e.lengthComputable && !imageAborted) {
+        imageProgress = (e.loaded / e.total) * 100;
+        checkProgress();
+      }
+    };
+    imageXHR.onload = () => {
+      if (imageXHR.status === 200 && !imageAborted) {
+        imageProgress = 100;
+        if (videoProgress < 80 && !videoShown) {
+          showImage(imageXHR.response);
+        }
+      }
+    };
+    imageXHR.onerror = () => {
+      if (!imageAborted) {
+        console.error("Hero loader: Image failed to download.");
+      }
+    };
+    imageXHR.send();
+  }
+
+  // Start video download
+  videoXHR = new XMLHttpRequest();
+  videoXHR.open("GET", videoUrl, true);
+  videoXHR.responseType = "blob";
+  videoXHR.timeout = 25000; // 25s timeout
+  videoXHR.onprogress = (e) => {
+    if (e.lengthComputable) {
+      videoProgress = (e.loaded / e.total) * 100;
+      checkProgress();
+    }
+  };
+  videoXHR.onload = () => {
+    if (videoXHR.status === 200) {
+      videoProgress = 100;
+      playVideo(videoXHR.response);
+    }
+  };
+  videoXHR.onerror = handleVideoFailure;
+  videoXHR.ontimeout = handleVideoFailure;
+  videoXHR.send();
+
+  // Start image download initially
+  startImageDownload();
+
+  function handleVideoFailure() {
+    console.error("Hero loader: Video download failed or timed out.");
+    // Fallback: force finish image if aborted, not started, or finished with error
+    if (imageAborted || imageXHR.readyState === 0 || (imageXHR.readyState === 4 && imageXHR.status !== 200)) {
+      console.log("Hero loader: Restarting/re-enabling image download as video failed.");
+      startImageDownload();
+    } else if (imageXHR.status === 200) {
+      showImage(imageXHR.response);
+    } else {
+      console.log("Hero loader: Video failed, but image download is already in progress. Letting it complete.");
+    }
+  }
+});
