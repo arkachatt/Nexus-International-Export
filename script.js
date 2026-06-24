@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const hamburger = document.getElementById("hamburger");
   const navbar = document.getElementById("navbar");
-  const logoImage = document.querySelector(".logo-image");
   const hero = document.querySelector(".hero");
 
   if (!hamburger || !navbar) {
@@ -23,15 +22,9 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!navbar.classList.contains("header-active")) {
         navbar.classList.add("header-active");
       }
-      if (logoImage && !logoImage.src.includes("Logo_light_deltoa.svg")) {
-        logoImage.src = "https://res.cloudinary.com/dpaulzah2/image/upload/v1782250641/Logo_light_deltoa.svg";
-      }
     } else {
       if (navbar.classList.contains("header-active")) {
         navbar.classList.remove("header-active");
-      }
-      if (logoImage && !logoImage.src.includes("Logo_dark_j9mzl6.svg")) {
-        logoImage.src = "https://res.cloudinary.com/dpaulzah2/image/upload/v1782250703/Logo_dark_j9mzl6.svg";
       }
     }
   }
@@ -444,7 +437,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!loaderOverlay || !loaderLogoContainer || !navLogo) {
       document.documentElement.classList.remove("loading");
       document.body.classList.remove("loading");
-      if (navLogo) navLogo.classList.remove("hidden");
+      const navLogos = document.querySelectorAll(".logo-image");
+      navLogos.forEach(logo => logo.classList.remove("hidden"));
       if (loaderOverlay) loaderOverlay.remove();
       return;
     }
@@ -477,9 +471,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 4. After column exit and logo morph transition finishes (1.2s matches CSS transition duration)
     setTimeout(() => {
-      // Reveal the navbar logo
-      navLogo.classList.remove("hidden");
-      navLogo.style.opacity = "1";
+      // Reveal the navbar logos
+      const navLogos = document.querySelectorAll(".logo-image");
+      navLogos.forEach(logo => logo.classList.remove("hidden"));
 
       // Fade out the loader logo container
       loaderLogoContainer.style.opacity = "0";
