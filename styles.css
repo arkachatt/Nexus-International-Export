@@ -317,7 +317,7 @@ body {
 }
 
 /* Responsive Styles */
-@media (max-width: 1199px) {
+@media (max-width: 991px) {
   .header {
     height: 64px;
     padding: 12px 24px;
@@ -466,10 +466,6 @@ body {
 
   .hero-content {
     padding: 0 24px;
-  }
-
-  .hero-title br {
-    display: none;
   }
 
   .hero-ctas .btn {
@@ -707,7 +703,7 @@ body {
 @media (max-width: 1199px) {
   .advantages-grid {
     grid-template-columns: 1fr 1fr;
-    gap: 1.5rem; /* 24px */
+    gap: 40px;
   }
 
   .advantages-heading {
@@ -846,7 +842,7 @@ body {
     gap: 40px;
   }
   .product-item {
-    text-align: center;
+    text-align: left;
   }
   .product-image {
     aspect-ratio: auto;
@@ -857,7 +853,7 @@ body {
     font-size: 1rem;
     color: #333;
     margin-top: 10px;
-    text-align: center;
+    text-align: left;
   }
 }
 
@@ -1007,7 +1003,7 @@ body {
   line-height: 1.5;
   color: #a2a8a7;
   text-align: center;
-  max-width: 100%;
+  max-width: 600px;
   margin: 0;
 }
 
@@ -1362,10 +1358,10 @@ body {
   .reviews-wrapper {
     overflow: hidden;
     padding-bottom: 0;
-    margin-bottom: -400px;
+    margin-bottom: -50px;
   }
   .reviews-wrapper::after {
-    height: calc(100% - 450px);
+    height: calc(100% - 100px);
   }
   .reviews-scroll {
     overflow-x: auto;
@@ -1374,11 +1370,14 @@ body {
     transition: none;
     scrollbar-width: none;
     padding-top: 50px;
-    padding-bottom: 400px;
+    padding-bottom: 50px;
     scroll-padding-left: 40px;
   }
   .review-card {
-    flex: 0 0 350px;
+    flex: 0 0 399px;
+    box-shadow: 
+      0 4px 10px rgba(0, 0, 0, 0.02),
+      0 12px 24px rgba(0, 0, 0, 0.04);
   }
 }
 
@@ -1689,11 +1688,13 @@ body {
 .contact-image-area {
   width: 660px;
   flex-shrink: 0;
+  align-self: stretch;
+  display: flex;
 }
 
 .contact-image {
   width: 100%;
-  height: 890px;
+  height: 100%;
   object-fit: cover;
   border-radius: 8px;
 }
@@ -1705,9 +1706,6 @@ body {
   }
   .contact-image-area {
     width: 450px;
-  }
-  .contact-image {
-    height: 600px;
   }
 }
 
