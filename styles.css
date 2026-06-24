@@ -23,6 +23,11 @@ body {
   scroll-behavior: smooth;
 }
 
+section[id] {
+  scroll-margin-top: 104px; /* navbar height (80px) + 24px */
+}
+
+
 .wrapper {
   /* width: 75%;  Center content using 75% width */
   margin: 0 auto; /* Horizontally center the container */
@@ -335,6 +340,10 @@ body {
 
 
 @media (max-width: 991px) {
+  section[id] {
+    scroll-margin-top: 88px; /* navbar height (64px) + 24px */
+  }
+
   .header {
     height: 64px;
     padding: 12px 24px;
