@@ -1374,6 +1374,7 @@ body {
 @media (max-width: 1199px) {
   .reviews-section .container {
     width: calc(100% - 64px);
+    overflow: visible;
   }
   .reviews-section {
     padding: 100px 0 60px 0;
