@@ -520,6 +520,10 @@ body {
     line-height: 1.3;
   }
 
+  .hero-title br {
+    display: none;
+  }
+
   .hero-ctas {
     flex-direction: column;
     align-items: center;
