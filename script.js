@@ -175,6 +175,43 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Touch/swipe gestures for tablet/desktop translation
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  reviewsScroll.addEventListener("touchstart", (e) => {
+    touchStartX = e.changedTouches[0].clientX;
+  }, { passive: true });
+
+  reviewsScroll.addEventListener("touchend", (e) => {
+    touchEndX = e.changedTouches[0].clientX;
+    handleSwipe();
+  }, { passive: true });
+
+  function handleSwipe() {
+    const isDesktop = window.innerWidth >= 992;
+    if (!isDesktop) return; // Native swipe active on mobile
+
+    const swipeThreshold = 50;
+    const diff = touchStartX - touchEndX;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      const scrollAmount = getScrollAmount();
+      if (diff > 0) {
+        // Swipe left -> go right
+        const maxTranslate = getMaxTranslate();
+        currentTranslate = Math.min(currentTranslate + scrollAmount, maxTranslate);
+        reviewsScroll.style.transform = `translateX(-${currentTranslate}px)`;
+        updateArrowStates();
+      } else {
+        // Swipe right -> go left
+        currentTranslate = Math.max(currentTranslate - scrollAmount, 0);
+        reviewsScroll.style.transform = `translateX(-${currentTranslate}px)`;
+        updateArrowStates();
+      }
+    }
+  }
+
   // Scroll listener for mobile/tablet swipes
   reviewsScroll.addEventListener("scroll", updateArrowStates);
 
