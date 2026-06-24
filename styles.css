@@ -1393,7 +1393,7 @@ body {
     height: calc(100% - 100px);
   }
   .reviews-scroll {
-    overflow-x: auto;
+    overflow-x: visible;
     overflow-y: visible;
     transform: none !important;
     transition: none;
@@ -1732,6 +1732,9 @@ body {
 
 /* Responsive Styles */
 @media (max-width: 1200px) {
+  .contact-section {
+    padding-right: 16px;
+  }
   .contact-section .container {
     width: calc(100% - 64px);
   }
