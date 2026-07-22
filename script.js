@@ -256,15 +256,52 @@ document.addEventListener("DOMContentLoaded", () => {
       initialSelectedTag.setAttribute("data-selected", "true");
     }
 
+    let cleanupTimeout = null;
+
     tagContainer.addEventListener("click", (e) => {
       const tag = e.target.closest(".tag");
       if (!tag) return;
 
-      // Toggle "data-selected" between "true" and "false"
+      // 1. Measure initial height of tag container
+      const startHeight = tagContainer.offsetHeight;
+
+      // 2. Toggle "data-selected" between "true" and "false"
       const currentlySelected = tag.getAttribute("data-selected") === "true";
       console.log("Tag clicked:", tag, "Was selected?", currentlySelected);
-
       tag.setAttribute("data-selected", currentlySelected ? "false" : "true");
+
+      // 3. Clear any pending transition cleanups
+      if (cleanupTimeout) {
+        clearTimeout(cleanupTimeout);
+        cleanupTimeout = null;
+      }
+
+      // 4. Measure final height (by resetting to auto momentarily, then animating)
+      tagContainer.style.height = "auto";
+      const endHeight = tagContainer.scrollHeight;
+
+      if (startHeight !== endHeight) {
+        // Set back to startHeight instantly
+        tagContainer.style.transition = "none";
+        tagContainer.style.height = `${startHeight}px`;
+
+        // Force a layout reflow so the browser registers the starting height
+        tagContainer.offsetHeight;
+
+        // Transition smoothly to endHeight
+        tagContainer.style.transition = "height 0.3s cubic-bezier(0.25, 1, 0.5, 1)";
+        tagContainer.style.height = `${endHeight}px`;
+
+        // Clean up inline styles once the animation finishes
+        cleanupTimeout = setTimeout(() => {
+          tagContainer.style.transition = "";
+          tagContainer.style.height = "";
+          cleanupTimeout = null;
+        }, 300);
+      } else {
+        // Clear style if height did not change
+        tagContainer.style.height = "";
+      }
     });
   } else {
     console.warn("No tagContainer (#tagContainer) found in DOM.");
@@ -372,8 +409,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const heroVideo = document.querySelector(".hero-video");
   if (!heroVideo) return;
 
-  const imageUrl = "https://res.cloudinary.com/dpaulzah2/image/upload/v1782251285/First_frame_dmuxp7.png";
-  const videoUrl = "https://res.cloudinary.com/dpaulzah2/video/upload/v1782248512/video_nexus_umuhby.mp4";
+  const imageUrl = "assets/images/first-frame.png";
+  const videoUrl = "assets/videos/video-nexus.mp4";
 
   let imageXHR = null;
   let videoXHR = null;
