@@ -422,19 +422,22 @@ document.addEventListener("DOMContentLoaded", () => {
   let imageBlobUrl = null;
   let videoBlobUrl = null;
   let loaderDismissed = false;
+  let fallbackTimer = null;
+  let safetyTimeout = null;
 
   const loaderLogo = document.getElementById("loaderLogo");
 
   function updateLoaderProgress() {
     if (!loaderLogo) return;
-    const progress = Math.max(videoProgress, imageProgress);
-    loaderLogo.style.setProperty('--progress', `${progress}%`);
+    // Show only the video loading progress on the logo
+    loaderLogo.style.setProperty('--progress', `${videoProgress}%`);
   }
 
   function showImage(blob) {
     if (imageShown || videoShown) return;
     imageShown = true;
     imageBlobUrl = URL.createObjectURL(blob);
+    heroVideo.poster = imageBlobUrl;
     heroVideo.style.backgroundImage = `url(${imageBlobUrl})`;
     console.log("Hero loader: Showed fallback image.");
     dismissLoader();
@@ -443,9 +446,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function playVideo(blob) {
     if (videoShown) return;
     videoShown = true;
-
-    // Abort image download if it is still running to save bandwidth
-    abortImageDownload("video is ready");
 
     videoBlobUrl = URL.createObjectURL(blob);
     heroVideo.src = videoBlobUrl;
@@ -460,6 +460,16 @@ document.addEventListener("DOMContentLoaded", () => {
   function dismissLoader() {
     if (loaderDismissed) return;
     loaderDismissed = true;
+
+    // Clear active timeouts
+    if (fallbackTimer) {
+      clearTimeout(fallbackTimer);
+      fallbackTimer = null;
+    }
+    if (safetyTimeout) {
+      clearTimeout(safetyTimeout);
+      safetyTimeout = null;
+    }
 
     if (loaderLogo) {
       loaderLogo.style.setProperty('--progress', '100%');
@@ -506,7 +516,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 3. Trigger columns staggered slide-up
     loaderOverlay.classList.add("exit");
 
-    // 4. After column exit and logo morph transition finishes (1.2s matches CSS transition duration)
+    // 4. After transition finishes (1.2s matches CSS transition duration)
     setTimeout(() => {
       // Reveal the navbar logos
       const navLogos = document.querySelectorAll(".logo-image");
@@ -525,16 +535,8 @@ document.addEventListener("DOMContentLoaded", () => {
         loaderOverlay.remove();
         loaderLogoContainer.remove();
       }, 500); // 0.5s fade-out duration
-    }, 1200); // 1.2s column staggered exit transition duration
+    }, 1200); // 1.2s column exit duration
   }
-
-  // Safety fallback: Dismiss loader after 8 seconds to prevent user getting stuck
-  setTimeout(() => {
-    if (!loaderDismissed) {
-      console.warn("Hero loader: Safety timeout triggered. Dismissing loader.");
-      dismissLoader();
-    }
-  }, 8000);
 
   function abortImageDownload(reason) {
     if (imageXHR && imageXHR.readyState !== 4 && imageXHR.readyState !== 0 && !imageAborted) {
@@ -544,6 +546,38 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function abortVideoDownload(reason) {
+    if (videoXHR && videoXHR.readyState !== 4 && videoXHR.readyState !== 0) {
+      videoXHR.abort();
+      console.log(`Hero loader: Aborting video download (Reason: ${reason}).`);
+    }
+  }
+
+  function triggerImageFallback() {
+    abortVideoDownload("switching to image fallback");
+    if (imageXHR && imageXHR.status === 200 && imageXHR.response && !imageAborted) {
+      showImage(imageXHR.response);
+    } else {
+      console.log("Hero loader: Image is still downloading, waiting for onload to trigger fallback...");
+    }
+  }
+
+  // Safety fallback: Dismiss loader after 8 seconds to prevent user getting stuck
+  safetyTimeout = setTimeout(() => {
+    if (!loaderDismissed) {
+      console.warn("Hero loader: Safety timeout triggered. Dismissing loader.");
+      dismissLoader();
+    }
+  }, 8000);
+
+  // Fallback Timer: If video takes more than 4 seconds, fallback to image
+  fallbackTimer = setTimeout(() => {
+    if (!loaderDismissed && !videoShown) {
+      console.log("Hero loader: Video download is taking longer than 4s. Switching to image fallback.");
+      triggerImageFallback();
+    }
+  }, 4000);
+
   function checkProgress() {
     updateLoaderProgress();
     // If video is fully ready (100% loaded in XHR)
@@ -551,22 +585,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (videoXHR && videoXHR.response) {
         playVideo(videoXHR.response);
       }
-      return;
-    }
-
-    // Rule 1: If image load reaches 50% and video is ready: immediately play video
-    // (This is covered when videoProgress === 100, which calls playVideo immediately).
-
-    // Rule 2: If image load reaches 50% and video is below 80% loaded: show image when it finishes
-    if (imageProgress >= 50 && videoProgress < 80) {
-      if (imageXHR && imageXHR.status === 200 && imageXHR.response && !imageAborted) {
-        showImage(imageXHR.response);
-      }
-    }
-
-    // Rule 3: If image load >= 50% and video is >= 80% loaded: abort image download to save bandwidth
-    if (imageProgress >= 50 && videoProgress >= 80) {
-      abortImageDownload(`image at ${imageProgress.toFixed(1)}% and video at ${videoProgress.toFixed(1)}% (>= 80%)`);
     }
   }
 
@@ -580,14 +598,16 @@ document.addEventListener("DOMContentLoaded", () => {
     imageXHR.onprogress = (e) => {
       if (e.lengthComputable && !imageAborted) {
         imageProgress = (e.loaded / e.total) * 100;
-        checkProgress();
       }
     };
     imageXHR.onload = () => {
       if (imageXHR.status === 200 && !imageAborted) {
         imageProgress = 100;
-        updateLoaderProgress();
-        if (videoProgress < 80 && !videoShown) {
+        // If fallback timer already fired, show fallback image immediately
+        if (!videoShown && (videoXHR.readyState === 0 || videoXHR.readyState === 4 || imageAborted)) {
+          showImage(imageXHR.response);
+        } else if (!videoShown && !fallbackTimer) {
+          // If video failed or fallback triggered and cleared timer
           showImage(imageXHR.response);
         }
       }
@@ -627,15 +647,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function handleVideoFailure() {
     console.error("Hero loader: Video download failed or timed out.");
-    // Fallback: force finish image if aborted, not started, or finished with error
-    if (imageAborted || imageXHR.readyState === 0 || (imageXHR.readyState === 4 && imageXHR.status !== 200)) {
-      console.log("Hero loader: Restarting/re-enabling image download as video failed.");
-      startImageDownload();
-    } else if (imageXHR.status === 200) {
-      showImage(imageXHR.response);
-    } else {
-      console.log("Hero loader: Video failed, but image download is already in progress. Letting it complete.");
+    if (fallbackTimer) {
+      clearTimeout(fallbackTimer);
+      fallbackTimer = null;
     }
+    triggerImageFallback();
   }
 
   // Expose dismissLoader globally for testing/debugging purposes
