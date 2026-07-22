@@ -447,14 +447,42 @@ document.addEventListener("DOMContentLoaded", () => {
     if (videoShown) return;
     videoShown = true;
 
+    // Abort image download if it is still running to save bandwidth
+    abortImageDownload("video is ready");
+
     videoBlobUrl = URL.createObjectURL(blob);
     heroVideo.src = videoBlobUrl;
     heroVideo.load();
+
+    let playSafetyTimeout = null;
+
+    const doDismiss = () => {
+      if (playSafetyTimeout) {
+        clearTimeout(playSafetyTimeout);
+        playSafetyTimeout = null;
+      }
+      dismissLoader();
+    };
+
+    const onPlaying = () => {
+      console.log("Hero loader: Video is playing. Dismissing loader.");
+      doDismiss();
+      heroVideo.removeEventListener("playing", onPlaying);
+    };
+
+    heroVideo.addEventListener("playing", onPlaying);
+
+    // Safety timeout of 1.5 seconds in case playing event is delayed or doesn't fire
+    playSafetyTimeout = setTimeout(() => {
+      console.warn("Hero loader: Video play event timed out. Dismissing loader.");
+      heroVideo.removeEventListener("playing", onPlaying);
+      doDismiss();
+    }, 1500);
+
     heroVideo.play().catch((err) => {
       console.warn("Autoplay failed or interrupted:", err);
+      doDismiss();
     });
-    console.log("Hero loader: Playing video.");
-    dismissLoader();
   }
 
   function dismissLoader() {
