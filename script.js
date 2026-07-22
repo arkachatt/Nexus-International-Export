@@ -422,7 +422,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let imageBlobUrl = null;
   let videoBlobUrl = null;
   let loaderDismissed = false;
-  let fallbackTimer = null;
+
   let safetyTimeout = null;
 
   const loaderLogo = document.getElementById("loaderLogo");
@@ -490,10 +490,6 @@ document.addEventListener("DOMContentLoaded", () => {
     loaderDismissed = true;
 
     // Clear active timeouts
-    if (fallbackTimer) {
-      clearTimeout(fallbackTimer);
-      fallbackTimer = null;
-    }
     if (safetyTimeout) {
       clearTimeout(safetyTimeout);
       safetyTimeout = null;
@@ -590,21 +586,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Safety fallback: Dismiss loader after 8 seconds to prevent user getting stuck
+  // Safety fallback: Dismiss loader after 15 seconds to prevent user getting stuck
   safetyTimeout = setTimeout(() => {
     if (!loaderDismissed) {
       console.warn("Hero loader: Safety timeout triggered. Dismissing loader.");
       dismissLoader();
     }
-  }, 8000);
+  }, 15000);
 
-  // Fallback Timer: If video takes more than 4 seconds, fallback to image
-  fallbackTimer = setTimeout(() => {
-    if (!loaderDismissed && !videoShown) {
-      console.log("Hero loader: Video download is taking longer than 4s. Switching to image fallback.");
-      triggerImageFallback();
-    }
-  }, 4000);
+
 
   function checkProgress() {
     updateLoaderProgress();
@@ -629,11 +619,8 @@ document.addEventListener("DOMContentLoaded", () => {
     imageXHR.onload = () => {
       if (imageXHR.status === 200 && !imageAborted) {
         imageProgress = 100;
-        // If fallback timer already fired, show fallback image immediately
+        // If video failed or safety timeout triggered, show fallback image immediately
         if (!videoShown && (videoXHR.readyState === 0 || videoXHR.readyState === 4 || imageAborted)) {
-          showImage(imageXHR.response);
-        } else if (!videoShown && !fallbackTimer) {
-          // If video failed or fallback triggered and cleared timer
           showImage(imageXHR.response);
         }
       }
@@ -673,10 +660,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function handleVideoFailure() {
     console.error("Hero loader: Video download failed or timed out.");
-    if (fallbackTimer) {
-      clearTimeout(fallbackTimer);
-      fallbackTimer = null;
-    }
     triggerImageFallback();
   }
 
