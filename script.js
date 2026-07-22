@@ -443,15 +443,15 @@ document.addEventListener("DOMContentLoaded", () => {
     dismissLoader();
   }
 
-  function playVideo(blob) {
+  function playVideo() {
     if (videoShown) return;
     videoShown = true;
 
     // Abort image download if it is still running to save bandwidth
     abortImageDownload("video is ready");
 
-    videoBlobUrl = URL.createObjectURL(blob);
-    heroVideo.src = videoBlobUrl;
+    // Load video natively using direct URL to support Safari range requests from cache
+    heroVideo.src = videoUrl;
     heroVideo.load();
 
     let playSafetyTimeout = null;
@@ -610,9 +610,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateLoaderProgress();
     // If video is fully ready (100% loaded in XHR)
     if (videoProgress === 100) {
-      if (videoXHR && videoXHR.response) {
-        playVideo(videoXHR.response);
-      }
+      playVideo();
     }
   }
 
@@ -663,7 +661,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (videoXHR.status === 200) {
       videoProgress = 100;
       updateLoaderProgress();
-      playVideo(videoXHR.response);
+      playVideo();
     }
   };
   videoXHR.onerror = handleVideoFailure;
